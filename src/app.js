@@ -1,25 +1,17 @@
-import express from 'express';
 
+const express = require('express');
+  
 const app = express();
-
-app.use(express.json());
-
-// Route
-app.get('/', (req, res) => {
-  res.send('<h1>Hello World</h1>');
+const PORT = 3000;
+  
+app.get('/file', (req, res)=>{
+    res.send('working')
 });
-
-const port = process.env.PORT || 5000;
-const start = async () => {
-  try {
-    // await connectDB();
-    app.listen(port, () => {
-      console.log(`Server listening at http://127.0.0.1:${port}`);
-    });
-    console.log(process.env.NODE_ENV);
-  } catch (error) {
-    console.log('Something went wrong');
-  }
-};
-
-start();
+  
+app.listen(PORT, (error) =>{
+    if(!error)
+        console.log("Server is Successfully Running, and App is listening on port "+ PORT)
+    else 
+        console.log("Error occurred, server can't start", error);
+    }
+);
