@@ -26,6 +26,7 @@ const registerUser = async (req, res, next) => {
     const oldUser = await User.findOne({ email });
 
     if (oldUser) {
+        console.log(await User.find({}));
       return res.status(409).send("User Already Exist. Please Login");
     }
     
