@@ -3,6 +3,6 @@ const router = express.Router();
 
 const { registerUser } = require("../controllers/register.js");
 
-router.get("/", registerUser);
+router.post("/", registerUser);
 
 module.exports = router;
