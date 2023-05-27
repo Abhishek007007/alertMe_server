@@ -2,7 +2,7 @@
   "name": "alertme_server",
   "version": "1.0.0",
   "description": "Emergency Alert System server ",
-  "main": "src/app.js",
+  "main": "src/index.js",
   "scripts": {
     "dev": "nodemon",
     "start": "node src/app.js",

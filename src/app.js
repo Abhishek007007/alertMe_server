@@ -1,17 +1,12 @@
 
 const express = require('express');
-  
+require("dotenv").config();
+require("../config/database").connect();
+
 const app = express();
-const PORT = 3000;
-  
-app.get('/file', (req, res)=>{
-    res.send('working')
-});
-  
-app.listen(PORT, (error) =>{
-    if(!error)
-        console.log("Server is Successfully Running, and App is listening on port "+ PORT)
-    else 
-        console.log("Error occurred, server can't start", error);
-    }
-);
+
+app.use(express.json());
+
+// Logic goes here
+
+module.exports = app;
