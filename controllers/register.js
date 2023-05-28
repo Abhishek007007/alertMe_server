@@ -10,10 +10,11 @@ const registerUser = async (req, res, next) => {
   // Our register logic starts here
   try {
     // Get user input
-    const { user_name, email, password } = req.body;
+    const {email, password } = req.body;
 
     // Validate user input
-    if (!(email && password && user_name)) {
+    if (!(email && password)) {
+        console.log("[register.js] incomplete register: ", req.body)
       return res.status(400).send({
         code: 400,
         status: "All input is required",
@@ -26,7 +27,7 @@ const registerUser = async (req, res, next) => {
     const oldUser = await User.findOne({ email });
 
     if (oldUser) {
-        console.log(await User.find({}));
+        console.log("[register.js] user tried to login: ", req.body);
       return res.status(409).send("User Already Exist. Please Login");
     }
     
@@ -35,7 +36,6 @@ const registerUser = async (req, res, next) => {
 
     // Create user in our database
     const user = await User.create({
-      user_name,
       email: email.toLowerCase(), // sanitize: convert email to lowercase
       password: encryptedPassword,
     });
@@ -51,8 +51,10 @@ const registerUser = async (req, res, next) => {
     // save user token
     user.token = token;
 
+    console.log("[register.js] New user: ", user);
+
     // return new user
-    res.status(201).json(user);
+    return res.status(201).json(user);
   } catch (err) {
     console.log(err);
   }
