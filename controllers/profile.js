@@ -1,7 +1,6 @@
 const Profile = require("../model/profile");
-const bcrypt = require("bcryptjs")
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const profile = require("../model/profile");
 
 require("dotenv").config();
 
@@ -13,6 +12,15 @@ const createProfile = async (req, res, next) => {
     // Get user input
     const {email, name, blood_group, date_of_birth } = req.body;
 
+    if (!(email && name && blood_group && date_of_birth)) {
+        console.log("[register.js] incomplete register: ", req.body)
+      return res.status(400).send({
+        code: 400,
+        status: "All input is required",
+        required: "email, name, blood_group, date_of_birth",
+      });
+    }
+
     // check if user already exist
     // Validate if user exist in our database
     const oldProfile = await Profile.findOne({ email });
@@ -23,7 +31,7 @@ const createProfile = async (req, res, next) => {
     }
     
     // Create user in our database
-    const profile = await User.create({
+    const profile = await Profile.create({
       email: email.toLowerCase(), // sanitize: convert email to lowercase
       name: name,
       blood_group: blood_group,
@@ -39,11 +47,30 @@ const createProfile = async (req, res, next) => {
   }
 };
 
-const updateProfile = ()=> {
+const updateProfile = (req, res, next)=> {
+    const {email} = req.body;
 
 }
-const retrieveProfile = () => {
+const retrieveProfile = async(req, res, next) => {
+    try {
+    // Get user input
+    const {email} = req.body;
 
+    // check if user already exist
+    // Validate if user exist in our database
+    const oldProfile = await Profile.findOne({ email });
+
+    if (oldProfile) {
+        console.log("[profile.js - retrieveProfile] profile already exists: ", req.body);
+        console.log(oldProfile);
+      return res.status(201).json(oldProfile);
+    } else {
+        console.log("User Not Found: ", email);
+        return res.status(403).send("user Not found");
+    }
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 
