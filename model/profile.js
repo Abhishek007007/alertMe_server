@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const profileSchema = new mongoose.Schema({
-  email: { type: String, unique: true },
+  phone: { type: String, unique: true },
   name: { type: String },
   date_of_birth: { type: String },
   blood_group: { type: String },
