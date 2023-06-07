@@ -5,6 +5,7 @@ const alertSchema = new mongoose.Schema({
     flag_cout : { type: String},
     view_cout : { type: String},
     time :  { type: String},
+    location: {type: String},
 });
 
 module.exports = mongoose.model("alert", alertSchema); 
