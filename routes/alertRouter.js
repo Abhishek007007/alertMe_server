@@ -3,10 +3,11 @@ const { authUser } = require("../controllers/authController.js"); //authenticate
 const router = express.Router();
 
 
-const { sendAlert, retrieveAllAlerts } = require("../controllers/alertController.js");
+const { sendAlert, retrieveAllAlerts, retrieveOneAlert } = require("../controllers/alertController.js");
 
 router.post("/", sendAlert);
 router.get("/", retrieveAllAlerts);
+router.get("/:_id", retrieveOneAlert);
 // router.get("/:phone",retrieveProfile);
 
 

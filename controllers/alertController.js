@@ -54,4 +54,24 @@ const retrieveAllAlerts = async (req, res, next) => {
     }
 };
 
-module.exports = { sendAlert, retrieveAllAlerts };
+const retrieveOneAlert = async (req, res, next) => {
+    try {
+        const {_id} = req.params;
+
+        const alert = await Alert.findOne({ _id });
+    
+        if (alert) {
+            console.log("[alertController.js - retrieveOneAlert] alert found successfully: ");
+            console.log(alert);
+          return res.status(201).json(alert);
+        } else {
+            console.log("[alertController.js - retrieveOneAlert] Alert Not Found: ", alert);
+            return res.status(403).send({"status": "alert Not found"});
+        }
+
+    } catch(err) {
+        console.log(err);
+    }
+}
+
+module.exports = { sendAlert, retrieveAllAlerts, retrieveOneAlert };
