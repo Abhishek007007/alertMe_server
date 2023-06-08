@@ -10,10 +10,10 @@ const registerUser = async (req, res, next) => {
   // Our register logic starts here
   try {
     // Get user input
-    const {phone, user_key } = req.body;
+    const {phone, login_key } = req.body;
 
     // Validate user input
-    if (!(phone && user_key)) {
+    if (!(phone && login_key)) {
         console.log("[register.js] incomplete register: ", req.body)
       return res.status(400).send({
         code: 400,
