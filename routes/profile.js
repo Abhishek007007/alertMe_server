@@ -6,7 +6,7 @@ const router = express.Router();
 const { createProfile, updateProfile, retrieveProfile } = require("../controllers/profile.js");
 
 router.post("/",createProfile);
-router.get("/",retrieveProfile);
+router.get("/:phone",retrieveProfile);
 
 
 module.exports = router;

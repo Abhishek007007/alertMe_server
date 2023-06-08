@@ -16,6 +16,5 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1/register", registerRouter);
 app.use("/api/v1/profile", profileRouter);
-// Logic goes here
 
 module.exports = app;
