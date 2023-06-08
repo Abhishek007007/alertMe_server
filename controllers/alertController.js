@@ -31,7 +31,7 @@ const sendAlert = async (req, res, next) => {
       time: time,
       location: location,
       flag_count: 0,
-      view_count: 0
+      view_count: 0,
     });
 
     console.log("[alertController.js] New alert: ", alert);
@@ -44,34 +44,45 @@ const sendAlert = async (req, res, next) => {
 };
 
 const retrieveAllAlerts = async (req, res, next) => {
-    try {
-        console.log("inside retrieveallaalert")
-        const alerts = await Alert.find({});
-        console.log(alerts)
-        return res.status(201).send(alerts);
-    } catch (err) {
-        console.log(err);
-    }
+  try {
+    console.log("inside retrieveallaalert");
+    const alerts = await Alert.find({});
+    console.log(alerts);
+    return res.status(201).send(alerts);
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 const retrieveOneAlert = async (req, res, next) => {
-    try {
-        const {_id} = req.params;
+  try {
+    const { _id } = req.params;
 
-        const alert = await Alert.findOne({ _id });
-    
-        if (alert) {
-            console.log("[alertController.js - retrieveOneAlert] alert found successfully: ");
-            console.log(alert);
-          return res.status(201).json(alert);
-        } else {
-            console.log("[alertController.js - retrieveOneAlert] Alert Not Found: ", alert);
-            return res.status(403).send({"status": "alert Not found"});
-        }
+    const alertData = await Alert.findOne({ _id });
 
-    } catch(err) {
-        console.log(err);
+    if (alertData) {
+      phone = alertData.phone;
+      const profileData = await Profile.findOne({ phone });
+      console.log("profile: ", profileData);
+      alert= {
+        alertData,
+        profileData
+      }
+      console.log(
+        "[alertController.js - retrieveOneAlert] alert found successfully: "
+      );
+      console.log(alert);
+      return res.status(201).json(alert);
+    } else {
+      console.log(
+        "[alertController.js - retrieveOneAlert] Alert Not Found: ",
+        alert
+      );
+      return res.status(403).send({ status: "alert Not found" });
     }
-}
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 module.exports = { sendAlert, retrieveAllAlerts, retrieveOneAlert };
