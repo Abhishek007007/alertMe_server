@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const alertSchema = new mongoose.Schema({
+    name: { type: String },
     phone: { type: String},
     flag_count : { type: String},
     view_count : { type: String},

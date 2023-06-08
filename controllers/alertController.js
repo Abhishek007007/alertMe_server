@@ -26,6 +26,7 @@ const sendAlert = async (req, res, next) => {
 
     // Create alert entry in database
     const alert = await Alert.create({
+      name: userProfile.name,
       phone: phone,
       time: time,
       location: location,
