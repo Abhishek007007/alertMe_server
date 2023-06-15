@@ -31,9 +31,6 @@
   "devDependencies": {
     "eslint": "^8.41.0"
   },
-  "keywords": [],
-  "engines": {
-    "node": ">=14 <15"
-    }
+  "keywords": []
 }
 
