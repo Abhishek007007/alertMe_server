@@ -1,20 +1,16 @@
 const User = require("../model/user");
-const bcrypt = require("bcryptjs")
-const jwt = require("jsonwebtoken")
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const user = require("../model/user");
 
 require("dotenv").config();
 
-// Register
 const registerUser = async (req, res, next) => {
-  // our register logic goes here...
-  // Our register logic starts here
   try {
-    // Get user input
-    const {phone, login_key } = req.body;
+    const { phone, login_key } = req.body;
 
-    // Validate user input
     if (!(phone && login_key)) {
-        console.log("[register.js] incomplete register: ", req.body)
+      console.log("[register.js] incomplete register: ", req.body);
       return res.status(400).send({
         code: 400,
         status: "All input is required",
@@ -22,38 +18,23 @@ const registerUser = async (req, res, next) => {
       });
     }
 
-    // check if user already exist
-    // Validate if user exist in our database
-    const oldUser = await User.findOne({ phone });
-
-    if (oldUser) {
-        console.log("[register.js] user tried to login: ", req.body);
-      return res.status(201).send("User Already Exist. Login");
-    }
-    
-    //Encrypt user password
     encryptedPassword = await bcrypt.hash(login_key, 10);
 
-    // Create user in our database
-    const user = await User.create({
-      phone: phone, // sanitize: convert email to lowercase
-      login_key: encryptedPassword,
-    });
-
-    // Create token
-    const token = jwt.sign(
-      { user_id: user._id, phone },
-      process.env.TOKEN_KEY,
+    const user = await User.findOneAndUpdate(
+      { phone: phone },
+      { phone: phone, login_key: encryptedPassword },
       {
-        expiresIn: "2h",
-      }
+        new: true,
+        upsert: true,
+      } 
     );
-    // save user token
+
+    const token = jwt.sign({ user_id: user._id, phone }, process.env.TOKEN_KEY);
+
     user.token = token;
 
     console.log("[register.js] New user: ", user);
 
-    // return new user
     return res.status(201).json(user);
   } catch (err) {
     console.log(err);
