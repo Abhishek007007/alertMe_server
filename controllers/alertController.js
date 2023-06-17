@@ -13,7 +13,7 @@ const sendAlert = async (req, res, next) => {
       return res.status(400).send({
         code: 400,
         status: "All input is required",
-        required: "phone, login_key",
+        required: "phone, time, location",
       });
     }
 
@@ -65,8 +65,15 @@ const retrieveOneAlert = async (req, res, next) => {
       const profileData = await Profile.findOne({ phone });
       console.log("profile: ", profileData);
       alert= {
-        alertData,
-        profileData
+        'name' : profileData.name,
+        'phone' : profileData.phone,
+        'time' : alertData.time,
+        'location' : alertData.location,
+        'blood_group' : profileData.blood_group,
+        'date_of_birth' : profileData.date_of_birth,
+        'medical_detail' : profileData.medical_details,
+        'view_count' : alertData.view_count,
+        'flag_count' : alertData.flag_count
       }
       console.log(
         "[alertController.js - retrieveOneAlert] alert found successfully: "
