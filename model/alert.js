@@ -9,4 +9,4 @@ const alertSchema = new mongoose.Schema({
     location: {type: String},
 });
 
-module.exports = mongoose.model("alert", alertSchema); 
+module.exports = mongoose.model("alert", alertSchema);  

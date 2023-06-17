@@ -6,13 +6,13 @@ require("dotenv").config();
 
 // update user profile with new values
 const updateProfile = async (req, res, next) => {
-
   try {
     // Get user input
-    const {phone, name, blood_group, date_of_birth, medical_details } = req.body;
+    const { phone, name, blood_group, date_of_birth, medical_details } =
+      req.body;
 
     if (!(phone && name && blood_group && date_of_birth)) {
-        console.log("[register.js] incomplete register: ", req.body)
+      console.log("[register.js] incomplete register: ", req.body);
       return res.status(400).send({
         code: 400,
         status: "All input is required",
@@ -25,27 +25,30 @@ const updateProfile = async (req, res, next) => {
     const oldProfile = await Profile.findOne({ phone });
 
     if (oldProfile) {
-        console.log("[profile.js] profile already exists: ", req.body);
+      console.log("[profile.js] profile already exists: ", req.body);
       return res.status(201).json(oldProfile);
     }
     var query = { phone: phone };
-    var updatedValues = { $set: {phone: phone, name: name } };
+    var updatedValues = { $set: { phone: phone, name: name } };
     // Create user in our database
     const profile = await Profile.updateOne(
-      {phone: phone},
-      {$set: {phone: phone,
-        name: name,
-        blood_group: blood_group,
-        date_of_birth: date_of_birth,
-        medical_details: medical_details},},
-        (err, res) => {
-          if(err) {
-            console.log(err)
-          } else {
-            console.log("updated profile: ", res)
-          }
-
+      { phone: phone },
+      {
+        $set: {
+          phone: phone,
+          name: name,
+          blood_group: blood_group,
+          date_of_birth: date_of_birth,
+          medical_details: medical_details,
+        },
+      },
+      (err, res) => {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log("updated profile: ", res);
         }
+      }
     );
 
     console.log("[Profile.js] New profile: ", profile);
@@ -61,65 +64,64 @@ const updateProfile = async (req, res, next) => {
 const createProfile = async (req, res, next) => {
   try {
     // Get user input
-    const {phone, name, blood_group, date_of_birth } = req.body;
+    const { phone, name, blood_group, date_of_birth, medical_details } =
+      req.body;
 
-    if (!(phone && name && blood_group && date_of_birth)) {
-        console.log("[profile.js - createProfile] incomplete request: ", req.body)
+    if (!(phone && name && blood_group && date_of_birth && medical_details)) {
+      console.log(
+        "[profile.js - createProfile] incomplete request: ",
+        req.body
+      );
       return res.status(400).send({
         code: 400,
         status: "All input is required",
-        required: "phone, name, blood_group, date_of_birth",
-      }); 
+        required: "phone, name, blood_group, date_of_birth, medical_details",
+      });
     }
 
-    const oldProfile = await Profile.findOne({ phone });
+    const profile = await Profile.findOneAndUpdate(
+      { phone: phone },
+      {
+        phone: phone,
+        name: name,
+        blood_group: blood_group,
+        date_of_birt: date_of_birth,
+        medical_details: medical_details,
+      },
+      {
+        new: true,
+        upsert: true,
+      }
+    );
 
-    if (oldProfile) {
-        console.log("[profile.js - createProfile] profile already exists: ", req.body);
-        return res.status(401).send({"status" : "user profile already exists"})
-    } 
-    else {
-      console.log("[profile.js - createProfile] couldn't find profile: ", req.body.phone);
-    }
-    
-    // Create user in our database
-    const profile = await Profile.create({
-      phone: phone,
-      name: name,
-      blood_group: blood_group,
-      date_of_birth: date_of_birth
-    });
-
-    console.log("[Profile.js - create profile] New profile: ", profile);
+    console.log("[Profile.js - create profile] New/update profile: ", profile);
 
     // return new user
     return res.status(201).json(profile);
   } catch (err) {
     console.log(err);
   }
-
-}
+};
 
 // retrieve user profile
-const retrieveProfile = async(req, res, next) => {
-    try {
-      const {phone} = req.params;
+const retrieveProfile = async (req, res, next) => {
+  try {
+    const { phone } = req.params;
 
     // check if user already exist
     const oldProfile = await Profile.findOne({ phone });
 
     if (oldProfile) {
-        console.log("[profile.js - retrieveProfile] profile already exists: ");
-        console.log(oldProfile);
+      console.log("[profile.js - retrieveProfile] profile already exists: ");
+      console.log(oldProfile);
       return res.status(201).json(oldProfile);
     } else {
-        console.log("[profile.js - retrieveProfile] User Not Found: ", phone);
-        return res.status(403).send({"status": "user Not found"});
+      console.log("[profile.js - retrieveProfile] User Not Found: ", phone);
+      return res.status(403).send({ status: "user Not found" });
     }
   } catch (err) {
     console.log(err);
   }
-}
-
+};
 
 module.exports = { createProfile, updateProfile, retrieveProfile };
