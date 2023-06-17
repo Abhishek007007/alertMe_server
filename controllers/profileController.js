@@ -85,7 +85,7 @@ const createProfile = async (req, res, next) => {
         phone: phone,
         name: name,
         blood_group: blood_group,
-        date_of_birt: date_of_birth,
+        date_of_birth: date_of_birth,
         medical_details: medical_details,
       },
       {
@@ -117,7 +117,7 @@ const retrieveProfile = async (req, res, next) => {
       return res.status(201).json(oldProfile);
     } else {
       console.log("[profile.js - retrieveProfile] User Not Found: ", phone);
-      return res.status(403).send({ status: "user Not found" });
+      return res.status(403).send({ status: "profile not found" });
     }
   } catch (err) {
     console.log(err);
