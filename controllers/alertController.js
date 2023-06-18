@@ -2,7 +2,7 @@ const Profile = require("../model/profile");
 const Alert = require("../model/alert");
 const Users = require("../model/user");
 var admin = require("firebase-admin");
-
+const { getMessaging } = require("firebase-admin/messaging");
 
 require("dotenv").config();
 
@@ -10,8 +10,7 @@ require("dotenv").config();
 const sendAlert = async (req, res, next) => {
   try {
     const { phone, time, location } = req.body;
-    const registrationTokens = [];
-
+    const registrationTokens = ['de9IsG0UQt-fWw4kVsKGJD:APA91bFSa0ch76Fw55AvBiROXZydm7-Z7KntGDshA1eEQ-ex5yYTlN1_hiNnMSxFh7A_ipOCYYSmkt1_z6TeKlJyIlxhnnL73IBWjNFxOttMfBvkJ2Z6xnQ3jfqKJnogj9miR_5YKfuG'];
 
     if (!(phone && time && location)) {
       console.log("[alertController.js] incomplete alert: ", req.body);
@@ -24,6 +23,8 @@ const sendAlert = async (req, res, next) => {
 
     const userProfile = await Profile.findOne({ phone });
     const usersData = await Users.find({});
+
+    console.log("user data:", usersData);
     console.log(usersData);
 
     if (!userProfile) {
@@ -40,17 +41,23 @@ const sendAlert = async (req, res, next) => {
       flag_count: 0,
       view_count: 0,
     });
-    
 
-    const message = {
-      data: {score: '850', time: '2:45'},
-      tokens: registrationTokens,
-    };
-    
-    getMessaging().sendMulticast(message)
-      .then((response) => {
-        console.log(response.successCount + ' messages were sent successfully');
-      });
+    try {
+      const message = {
+        data: { score: "850", time: "2:45" },
+        tokens: registrationTokens,
+      };
+
+      getMessaging()
+        .sendMulticast(message)
+        .then((response) => {
+          console.log(
+            response.successCount + " messages were sent successfully"
+          );
+        });
+    } catch (e) {
+      console.log(e);
+    }
 
     console.log("[alertController.js] New alert: ", alert);
 
@@ -72,12 +79,27 @@ const retrieveAllAlerts = async (req, res, next) => {
   }
 };
 
+const updateCount = async (req, res, next) => {
+  try {
+    const { _id } = req.params;
+    const alert = await Alert.findOneAndUpdate({_id: _id}, {$inc: {
+      flag_count: 1
+    }}, {
+      new: true
+    });
+    console.log("count: ", alert.flag_count)
+    return res.status(200).send(alert);
+  } catch(e) {
+    console.log(e);
+  }
+}
+
 const retrieveAllAlerts2 = async (req, res, next) => {
   try {
     console.log("inside retrieveallaalert");
     currentAlerts = [];
     const alerts = await Alert.find({});
-    alerts.forEach (async (alert) => {
+    alerts.forEach(async (alert) => {
       phoneNo = alert.phone;
       // console.log(alert);
       console.log("alert.phone: ", phoneNo);
@@ -104,8 +126,8 @@ const retrieveAllAlerts2 = async (req, res, next) => {
       //   medical_detail: currentProfile.medical_details,
       // }
       console.log(currentAlert);
-      currentAlerts.push(currentAlert)
-    }) 
+      currentAlerts.push(currentAlert);
+    });
     console.log(alerts);
     return res.status(201).send(currentAlerts);
   } catch (err) {
@@ -151,4 +173,4 @@ const retrieveOneAlert = async (req, res, next) => {
   }
 };
 
-module.exports = { sendAlert, retrieveAllAlerts, retrieveOneAlert };
+module.exports = { sendAlert, retrieveAllAlerts, retrieveOneAlert, updateCount };

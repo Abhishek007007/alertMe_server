@@ -14,7 +14,7 @@ const registerUser = async (req, res, next) => {
       return res.status(400).send({
         code: 400,
         status: "All input is required",
-        required: "phone, login_key",
+        required: "phone, login_key, fcmtoken",
       });
     }
 
