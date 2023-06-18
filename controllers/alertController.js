@@ -44,7 +44,7 @@ const sendAlert = async (req, res, next) => {
 
     try {
       const message = {
-        data: { score: "850", time: "2:45" },
+        data: { name: userProfile.name, time: time },
         tokens: registrationTokens,
       };
 
