@@ -1,6 +1,8 @@
 const Profile = require("../model/profile");
 const Alert = require("../model/alert");
+const Users = require("../model/user");
 var admin = require("firebase-admin");
+
 
 require("dotenv").config();
 
@@ -8,6 +10,8 @@ require("dotenv").config();
 const sendAlert = async (req, res, next) => {
   try {
     const { phone, time, location } = req.body;
+    const registrationTokens = [];
+
 
     if (!(phone && time && location)) {
       console.log("[alertController.js] incomplete alert: ", req.body);
@@ -19,6 +23,8 @@ const sendAlert = async (req, res, next) => {
     }
 
     const userProfile = await Profile.findOne({ phone });
+    const usersData = await Users.find({});
+    console.log(usersData);
 
     if (!userProfile) {
       console.log("[alertController.js] profile does not exists: ", req.body);
