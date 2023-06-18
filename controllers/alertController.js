@@ -94,6 +94,22 @@ const updateCount = async (req, res, next) => {
   }
 }
 
+
+const updateView = async (req, res, next) => {
+  try {
+    const { _id } = req.params;
+    const alert = await Alert.findOneAndUpdate({_id: _id}, {$inc: {
+      view_count: 1
+    }}, {
+      new: true
+    });
+    console.log("count: ", alert.flag_count)
+    return res.status(200).send(alert);
+  } catch(e) {
+    console.log(e);
+  }
+}
+
 const retrieveAllAlerts2 = async (req, res, next) => {
   try {
     console.log("inside retrieveallaalert");
@@ -173,4 +189,4 @@ const retrieveOneAlert = async (req, res, next) => {
   }
 };
 
-module.exports = { sendAlert, retrieveAllAlerts, retrieveOneAlert, updateCount };
+module.exports = { sendAlert, retrieveAllAlerts, retrieveOneAlert, updateCount, updateView };
