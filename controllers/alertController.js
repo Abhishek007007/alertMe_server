@@ -10,7 +10,8 @@ require("dotenv").config();
 const sendAlert = async (req, res, next) => {
   try {
     const { phone, time, location } = req.body;
-    const registrationTokens = ['de9IsG0UQt-fWw4kVsKGJD:APA91bFSa0ch76Fw55AvBiROXZydm7-Z7KntGDshA1eEQ-ex5yYTlN1_hiNnMSxFh7A_ipOCYYSmkt1_z6TeKlJyIlxhnnL73IBWjNFxOttMfBvkJ2Z6xnQ3jfqKJnogj9miR_5YKfuG'];
+    // const registrationTokens = ['de9IsG0UQt-fWw4kVsKGJD:APA91bFSa0ch76Fw55AvBiROXZydm7-Z7KntGDshA1eEQ-ex5yYTlN1_hiNnMSxFh7A_ipOCYYSmkt1_z6TeKlJyIlxhnnL73IBWjNFxOttMfBvkJ2Z6xnQ3jfqKJnogj9miR_5YKfuG'];
+
 
     if (!(phone && time && location)) {
       console.log("[alertController.js] incomplete alert: ", req.body);
@@ -23,9 +24,9 @@ const sendAlert = async (req, res, next) => {
 
     const userProfile = await Profile.findOne({ phone });
     const usersData = await Users.find({});
+    let registrationTokens = usersData.map(a => a.fcmtoken);
 
-    console.log("user data:", usersData);
-    console.log(usersData);
+    console.log(registrationTokens);
 
     if (!userProfile) {
       console.log("[alertController.js] profile does not exists: ", req.body);
@@ -44,7 +45,11 @@ const sendAlert = async (req, res, next) => {
 
     try {
       const message = {
-        data: { name: userProfile.name, time: time },
+        data: {
+          id: JSON.stringify(alert._id),
+          name: userProfile.name,
+          time: time,
+        },
         tokens: registrationTokens,
       };
 
@@ -55,7 +60,7 @@ const sendAlert = async (req, res, next) => {
             response.successCount + " messages were sent successfully"
           );
         });
-    } catch (e) {
+    } catch (e) { 
       console.log(e);
     }
 
@@ -82,33 +87,44 @@ const retrieveAllAlerts = async (req, res, next) => {
 const updateCount = async (req, res, next) => {
   try {
     const { _id } = req.params;
-    const alert = await Alert.findOneAndUpdate({_id: _id}, {$inc: {
-      flag_count: 1
-    }}, {
-      new: true
-    });
-    console.log("count: ", alert.flag_count)
+    const alert = await Alert.findOneAndUpdate(
+      { _id: _id },
+      {
+        $inc: {
+          flag_count: 1,
+        },
+      },
+      {
+        new: true,
+      }
+    );
+    console.log("count: ", alert.flag_count);
     return res.status(200).send(alert);
-  } catch(e) {
+  } catch (e) {
     console.log(e);
   }
-}
-
+};
 
 const updateView = async (req, res, next) => {
   try {
     const { _id } = req.params;
-    const alert = await Alert.findOneAndUpdate({_id: _id}, {$inc: {
-      view_count: 1
-    }}, {
-      new: true
-    });
-    console.log("count: ", alert.flag_count)
+    const alert = await Alert.findOneAndUpdate(
+      { _id: _id },
+      {
+        $inc: {
+          view_count: 1,
+        },
+      },
+      {
+        new: true,
+      }
+    );
+    console.log("count: ", alert.flag_count);
     return res.status(200).send(alert);
-  } catch(e) {
+  } catch (e) {
     console.log(e);
   }
-}
+};
 
 const retrieveAllAlerts2 = async (req, res, next) => {
   try {
@@ -189,4 +205,10 @@ const retrieveOneAlert = async (req, res, next) => {
   }
 };
 
-module.exports = { sendAlert, retrieveAllAlerts, retrieveOneAlert, updateCount, updateView };
+module.exports = {
+  sendAlert,
+  retrieveAllAlerts,
+  retrieveOneAlert,
+  updateCount,
+  updateView,
+};
