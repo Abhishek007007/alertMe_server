@@ -1,5 +1,6 @@
 const Profile = require("../model/profile");
 const Alert = require("../model/alert");
+var admin = require("firebase-admin");
 
 require("dotenv").config();
 
@@ -33,6 +34,17 @@ const sendAlert = async (req, res, next) => {
       flag_count: 0,
       view_count: 0,
     });
+    
+
+    const message = {
+      data: {score: '850', time: '2:45'},
+      tokens: registrationTokens,
+    };
+    
+    getMessaging().sendMulticast(message)
+      .then((response) => {
+        console.log(response.successCount + ' messages were sent successfully');
+      });
 
     console.log("[alertController.js] New alert: ", alert);
 
@@ -54,6 +66,47 @@ const retrieveAllAlerts = async (req, res, next) => {
   }
 };
 
+const retrieveAllAlerts2 = async (req, res, next) => {
+  try {
+    console.log("inside retrieveallaalert");
+    currentAlerts = [];
+    const alerts = await Alert.find({});
+    alerts.forEach (async (alert) => {
+      phoneNo = alert.phone;
+      // console.log(alert);
+      console.log("alert.phone: ", phoneNo);
+
+      const currentProfile = await Profile.findOne({ phoneNo });
+      console.log("current profile: ", currentProfile);
+
+      currentAlert = {
+        _id: alert._id,
+        name: alert.name,
+        phone: alert.phone,
+        flag_count: alert.flag_count,
+        view_count: alert.view_count,
+        time: alert.time,
+        location: alert.location,
+        blood_group: currentProfile.blood_group,
+        date_of_birth: currentProfile.date_of_birth,
+        medical_detail: currentProfile.medical_details,
+      };
+
+      // alert = {
+      //   blood_group: currentProfile.blood_group,
+      //   date_of_birth: currentProfile.date_of_birth,
+      //   medical_detail: currentProfile.medical_details,
+      // }
+      console.log(currentAlert);
+      currentAlerts.push(currentAlert)
+    }) 
+    console.log(alerts);
+    return res.status(201).send(currentAlerts);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 const retrieveOneAlert = async (req, res, next) => {
   try {
     const { _id } = req.params;
@@ -64,17 +117,17 @@ const retrieveOneAlert = async (req, res, next) => {
       phone = alertData.phone;
       const profileData = await Profile.findOne({ phone });
       console.log("profile: ", profileData);
-      alert= {
-        'name' : profileData.name,
-        'phone' : profileData.phone,
-        'time' : alertData.time,
-        'location' : alertData.location,
-        'blood_group' : profileData.blood_group,
-        'date_of_birth' : profileData.date_of_birth,
-        'medical_detail' : profileData.medical_details,
-        'view_count' : alertData.view_count,
-        'flag_count' : alertData.flag_count
-      }
+      alert = {
+        name: profileData.name,
+        phone: profileData.phone,
+        time: alertData.time,
+        location: alertData.location,
+        blood_group: profileData.blood_group,
+        date_of_birth: profileData.date_of_birth,
+        medical_detail: profileData.medical_details,
+        view_count: alertData.view_count,
+        flag_count: alertData.flag_count,
+      };
       console.log(
         "[alertController.js - retrieveOneAlert] alert found successfully: "
       );

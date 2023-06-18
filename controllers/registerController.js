@@ -7,9 +7,9 @@ require("dotenv").config();
 
 const registerUser = async (req, res, next) => {
   try {
-    const { phone, login_key } = req.body;
+    const { phone, login_key, fcmtoken } = req.body;
 
-    if (!(phone && login_key)) {
+    if (!(phone && login_key && fcmtoken)) {
       console.log("[register.js] incomplete register: ", req.body);
       return res.status(400).send({
         code: 400,
@@ -22,7 +22,7 @@ const registerUser = async (req, res, next) => {
 
     const user = await User.findOneAndUpdate(
       { phone: phone },
-      { phone: phone, login_key: encryptedPassword },
+      { phone: phone, login_key: encryptedPassword , fcmtoken: fcmtoken},
       {
         new: true,
         upsert: true,
