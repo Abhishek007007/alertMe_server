@@ -126,6 +126,24 @@ const updateView = async (req, res, next) => {
   }
 };
 
+const updateAlertType = async (req, res, next) => {
+
+}
+
+const deleteAlert = async (req, res, next) =>{
+  try {
+    const { _id } = req.params;
+    const alert = await Alert.findOneAndDelete({_id});
+    return res.status(200).send({"status" : "success"});
+
+  } catch(e) {
+    console.log(e);
+
+    return res.status(404).send({"status" : "fail"});
+  }
+}
+
+
 const retrieveAllAlerts2 = async (req, res, next) => {
   try {
     console.log("inside retrieveallaalert");
@@ -211,4 +229,5 @@ module.exports = {
   retrieveOneAlert,
   updateCount,
   updateView,
+  deleteAlert
 };
