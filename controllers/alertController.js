@@ -12,7 +12,6 @@ const sendAlert = async (req, res, next) => {
     const { phone, time, location } = req.body;
     // const registrationTokens = ['de9IsG0UQt-fWw4kVsKGJD:APA91bFSa0ch76Fw55AvBiROXZydm7-Z7KntGDshA1eEQ-ex5yYTlN1_hiNnMSxFh7A_ipOCYYSmkt1_z6TeKlJyIlxhnnL73IBWjNFxOttMfBvkJ2Z6xnQ3jfqKJnogj9miR_5YKfuG'];
 
-
     if (!(phone && time && location)) {
       console.log("[alertController.js] incomplete alert: ", req.body);
       return res.status(400).send({
@@ -24,7 +23,7 @@ const sendAlert = async (req, res, next) => {
 
     const userProfile = await Profile.findOne({ phone });
     const usersData = await Users.find({});
-    let registrationTokens = usersData.map(a => a.fcmtoken);
+    let registrationTokens = usersData.map((a) => a.fcmtoken);
 
     console.log(registrationTokens);
 
@@ -60,7 +59,7 @@ const sendAlert = async (req, res, next) => {
             response.successCount + " messages were sent successfully"
           );
         });
-    } catch (e) { 
+    } catch (e) {
       console.log(e);
     }
 
@@ -126,6 +125,19 @@ const updateView = async (req, res, next) => {
   }
 };
 
+const updateFCMToken = async (req, res, next) => {
+  try {
+    const { fcmtoken, phone } = req.query;
+    const result = await Alert.findOneAndUpdate(
+      { phone },
+      { fcmtoken: fcmtoken },
+      {
+        new: true,
+      }
+    )
+  } catch (e) {}
+};
+
 const updateAlertTag = async (req, res, next) => {
   try {
     const { _id, tag } = req.query;
@@ -137,30 +149,31 @@ const updateAlertTag = async (req, res, next) => {
         required: "_id, tag",
       });
     }
-    const result = await Alert.findOneAndUpdate({_id}, {alert_tag: tag}, {
-      new: true
-    });
+    const result = await Alert.findOneAndUpdate(
+      { _id },
+      { alert_tag: tag },
+      {
+        new: true,
+      }
+    );
 
     return res.status(200).send(result);
-  } catch(e) {
+  } catch (e) {
     console.log(e);
   }
+};
 
-}
-
-const deleteAlert = async (req, res, next) =>{
+const deleteAlert = async (req, res, next) => {
   try {
     const { _id } = req.params;
-    const alert = await Alert.findOneAndDelete({_id});
-    return res.status(200).send({"status" : "success"});
-
-  } catch(e) {
+    const alert = await Alert.findOneAndDelete({ _id });
+    return res.status(200).send({ status: "success" });
+  } catch (e) {
     console.log(e);
 
-    return res.status(404).send({"status" : "fail"});
+    return res.status(404).send({ status: "fail" });
   }
-}
-
+};
 
 const retrieveAllAlerts2 = async (req, res, next) => {
   try {
@@ -248,5 +261,6 @@ module.exports = {
   updateCount,
   updateView,
   deleteAlert,
-  updateAlertTag
+  updateAlertTag,
+  updateFCMToken
 };
