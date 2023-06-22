@@ -126,7 +126,25 @@ const updateView = async (req, res, next) => {
   }
 };
 
-const updateAlertType = async (req, res, next) => {
+const updateAlertTag = async (req, res, next) => {
+  try {
+    const { _id, tag } = req.query;
+    if (!(_id && tag)) {
+      console.log("[alertController.js] incomplete alert: ", req.body);
+      return res.status(400).send({
+        code: 400,
+        status: "All input is required",
+        required: "_id, tag",
+      });
+    }
+    const result = await Alert.findOneAndUpdate({_id}, {alert_tag: tag}, {
+      new: true
+    });
+
+    return res.status(200).send(result);
+  } catch(e) {
+    console.log(e);
+  }
 
 }
 
@@ -229,5 +247,6 @@ module.exports = {
   retrieveOneAlert,
   updateCount,
   updateView,
-  deleteAlert
+  deleteAlert,
+  updateAlertTag
 };
