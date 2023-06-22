@@ -128,14 +128,28 @@ const updateView = async (req, res, next) => {
 const updateFCMToken = async (req, res, next) => {
   try {
     const { fcmtoken, phone } = req.query;
-    const result = await Alert.findOneAndUpdate(
+    const result = await Users.findOneAndUpdate(
       { phone },
       { fcmtoken: fcmtoken },
       {
         new: true,
       }
-    )
+    );
   } catch (e) {}
+};
+
+const abortAlert = async (req, res, next) => {
+  try {
+    const { _id } = req.params;
+    const result = await Alert.findOneAndUpdate(
+      { _d },
+      { status: "aborted" },
+      {
+        new: true,
+      }
+    );
+    res.status(200).send(result);
+  } catch {}
 };
 
 const updateAlertTag = async (req, res, next) => {
@@ -262,5 +276,6 @@ module.exports = {
   updateView,
   deleteAlert,
   updateAlertTag,
-  updateFCMToken
+  updateFCMToken,
+  abortAlert
 };

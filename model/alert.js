@@ -8,7 +8,8 @@ const alertSchema = new mongoose.Schema({
     time :  { type: String},
     location: {type: String},
     alert_details: {type: String},
-    alert_tag: {type: String}
+    alert_tag: {type: String},
+    status: {type: String}
 });
 
 module.exports = mongoose.model("alert", alertSchema);
