@@ -142,7 +142,7 @@ const abortAlert = async (req, res, next) => {
   try {
     const { _id } = req.params;
     const result = await Alert.findOneAndUpdate(
-      { _d },
+      { _id },
       { status: "aborted" },
       {
         new: true,
