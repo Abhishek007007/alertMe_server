@@ -85,20 +85,27 @@ const retrieveAllAlerts = async (req, res, next) => {
 
 const updateCount = async (req, res, next) => {
   try {
-    const { _id } = req.params;
-    const alert = await Alert.findOneAndUpdate(
-      { _id: _id },
-      {
-        $inc: {
-          flag_count: 1,
+    const { _id, phone } = req.query;
+    const alert2 = await Alert.findById(_id);
+
+    if (!alert2.flaged.includes(phone)) {
+      const alert = await Alert.findOneAndUpdate(
+        { _id: _id },
+        {
+          $inc: {
+            flag_count: 1,
+          },
+          $push: { flaged: phone },
         },
-      },
-      {
-        new: true,
-      }
-    );
-    console.log("count: ", alert.flag_count);
-    return res.status(200).send(alert);
+        {
+          new: true,
+        }
+      );
+      console.log("count: ", alert.flag_count);
+      return res.status(200).send(alert);
+    } else {
+      return res.status(403).send({"status": "You have already flaged the alert"});
+    }
   } catch (e) {
     console.log(e);
   }
@@ -277,5 +284,5 @@ module.exports = {
   deleteAlert,
   updateAlertTag,
   updateFCMToken,
-  abortAlert
+  abortAlert,
 };

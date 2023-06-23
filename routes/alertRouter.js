@@ -8,7 +8,7 @@ const { sendAlert, retrieveAllAlerts, retrieveOneAlert, updateCount, updateView,
 router.post("/", sendAlert);
 router.get("/", retrieveAllAlerts);
 router.get("/:_id", retrieveOneAlert);
-router.put("/flag/:_id", updateCount);
+router.put("/flag/", updateCount);
 router.put("/view/:_id", updateView);
 router.delete("/:_id", deleteAlert);
 router.put("/updatetag/", updateAlertTag);
