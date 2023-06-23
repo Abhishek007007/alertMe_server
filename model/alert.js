@@ -12,5 +12,6 @@ const alertSchema = new mongoose.Schema({
     alert_tag: {type: String},
     status: {type: String}
 });
+alertSchema.index( { "expireAt": 1 }, { expireAfterSeconds: 20 } );
 
 module.exports = mongoose.model("alert", alertSchema);
