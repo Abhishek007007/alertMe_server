@@ -261,12 +261,12 @@ const retrieveOneAlert = async (req, res, next) => {
       console.log(
         "[alertController.js - retrieveOneAlert] alert found successfully: "
       );
-      console.log(alert);
+      console.log(alert_data);
       return res.status(201).json(alert_data);
     } else {
       console.log(
         "[alertController.js - retrieveOneAlert] Alert Not Found: ",
-        alert
+        alert_data
       );
       return res.status(403).send({ status: "alert Not found" });
     }
