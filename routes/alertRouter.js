@@ -9,7 +9,7 @@ router.post("/", sendAlert);
 router.get("/", retrieveAllAlerts);
 router.get("/:_id", retrieveOneAlert);
 router.put("/flag/", updateCount);
-router.put("/view/:_id", updateView);
+router.put("/view/", updateView);
 router.delete("/:_id", deleteAlert);
 router.put("/updatetag/", updateAlertTag);
 router.put("/updatefcmtoken/", updateFCMToken);
