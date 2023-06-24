@@ -5,6 +5,7 @@ require("../config/database").connect();
 const registerRouter = require("../routes/registerRouter");
 const alertRouter = require("../routes/alertRouter");
 const profileRouter = require("../routes/profileRouter");
+const deleteRouter = require("../routes/deleteRouter");
 
 const app = express();
 
@@ -16,7 +17,8 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1/register", registerRouter);
 app.use("/api/v1/profile", profileRouter);
-app.use("/api/v1/alert", alertRouter)
+app.use("/api/v1/alert", alertRouter);
+app.use("/api/v1/delete", deleteRouter);
 
 
 module.exports = app;
