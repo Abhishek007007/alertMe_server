@@ -48,6 +48,7 @@ const sendAlert = async (req, res, next) => {
           id: JSON.stringify(alert._id),
           name: userProfile.name,
           time: time,
+          location: location
         },
         tokens: registrationTokens,
       };
