@@ -87,6 +87,7 @@ const retrieveAllAlerts = async (req, res, next) => {
 const updateCount = async (req, res, next) => {
   try {
     const { _id, phone } = req.query;
+    console.log("new flag from: ", phone);
     const alert2 = await Alert.findById(_id);
 
     if (!alert2.flaged.includes(phone)) {
@@ -120,6 +121,7 @@ const updateView = async (req, res, next) => {
     const alert2 = await Alert.findById(_id);
 
     if (!alert2.viewed.includes(phone)) {
+      console.log("New View for alert: ", _id);
       const alert = await Alert.findOneAndUpdate(
         { _id: _id },
         {
@@ -135,6 +137,7 @@ const updateView = async (req, res, next) => {
       console.log("count: ", alert.view_count);
       return res.status(200).send(alert);
     } else {
+      console.log("user already viewed profile");
       return res
         .status(403)
         .send({ status: "You have already flaged the alert" });
