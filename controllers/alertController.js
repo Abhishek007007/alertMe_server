@@ -247,7 +247,7 @@ const retrieveOneAlert = async (req, res, next) => {
       phone = alertData.phone;
       const profileData = await Profile.findOne({ phone });
       console.log("profile: ", profileData);
-      alert = {
+      alert_data = {
         name: profileData.name,
         phone: profileData.phone,
         time: alertData.time,
@@ -262,7 +262,7 @@ const retrieveOneAlert = async (req, res, next) => {
         "[alertController.js - retrieveOneAlert] alert found successfully: "
       );
       console.log(alert);
-      return res.status(201).json(alert);
+      return res.status(201).json(alert_data);
     } else {
       console.log(
         "[alertController.js - retrieveOneAlert] Alert Not Found: ",
