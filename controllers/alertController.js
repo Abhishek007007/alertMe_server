@@ -104,7 +104,9 @@ const updateCount = async (req, res, next) => {
       console.log("count: ", alert.flag_count);
       return res.status(200).send(alert);
     } else {
-      return res.status(403).send({"status": "You have already flaged the alert"});
+      return res
+        .status(403)
+        .send({ status: "You have already flaged the alert" });
     }
   } catch (e) {
     console.log(e);
@@ -258,16 +260,11 @@ const retrieveOneAlert = async (req, res, next) => {
         view_count: alertData.view_count,
         flag_count: alertData.flag_count,
       };
-      console.log(
-        "[alertController.js - retrieveOneAlert] alert found successfully: "
-      );
+      console.log("[alertController.js - retrieveOneAlert] alert found successfully: ");
       console.log(alert_data);
       return res.status(201).json(alert_data);
     } else {
-      console.log(
-        "[alertController.js - retrieveOneAlert] Alert Not Found: ",
-        alert_data
-      );
+      console.log("[alertController.js - retrieveOneAlert] Alert Not Found: ");
       return res.status(403).send({ status: "alert Not found" });
     }
   } catch (err) {
