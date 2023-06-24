@@ -6,6 +6,7 @@ const alertSchema = new mongoose.Schema({
     flag_count : { type: Number, default: 0},
     flaged: [{ type: String }],
     view_count : { type: Number, default: 0},
+    viewed: [{ type: String }],
     time :  { type: String},
     location: {type: String},
     alert_details: {type: String},

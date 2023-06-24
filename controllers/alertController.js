@@ -116,20 +116,29 @@ const updateCount = async (req, res, next) => {
 
 const updateView = async (req, res, next) => {
   try {
-    const { _id } = req.params;
-    const alert = await Alert.findOneAndUpdate(
-      { _id: _id },
-      {
-        $inc: {
-          view_count: 1,
+    const { _id, phone } = req.query;
+    const alert2 = await Alert.findById(_id);
+
+    if (!alert2.viewed.includes(phone)) {
+      const alert = await Alert.findOneAndUpdate(
+        { _id: _id },
+        {
+          $inc: {
+            view_count: 1,
+          },
+          $push: { viewed: phone },
         },
-      },
-      {
-        new: true,
-      }
-    );
-    console.log("count: ", alert.flag_count);
-    return res.status(200).send(alert);
+        {
+          new: true,
+        }
+      );
+      console.log("count: ", alert.view_count);
+      return res.status(200).send(alert);
+    } else {
+      return res
+        .status(403)
+        .send({ status: "You have already flaged the alert" });
+    }
   } catch (e) {
     console.log(e);
   }
